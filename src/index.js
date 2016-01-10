@@ -7,7 +7,13 @@ function isPlain(value) {
   return type === 'number' || type === 'string' || type === 'boolean'
 }
 
-export default function(css={}, rootName='root', options={}) {
+export default function(css, rootName, options={}) {
+  css      = !css ? {} : css
+  options  = typeof rootName === 'string' ? options : rootName
+  rootName = typeof rootName === 'string' ? rootName : 'root'
+
+  options  = {mergeStyles: true, ...options}
+
   function getClass(k, v) {
     return css[isPlain(v) ? `${rootName}--${k}-${v}` : `${rootName}--${k}-${!!v}`]
   }
@@ -22,13 +28,18 @@ export default function(css={}, rootName='root', options={}) {
     }
 
     let className = cx(
-      css[rootName], allKlzzs, (node.props || {}).className, (self.props || {}).className
+      css[rootName], allKlzzs, node.props.className, self.props.className
     )
 
     if (className.trim) className = className.trim()
     if (className === '') className = null
 
-    return { className }
+    if (options.mergeStyles) {
+      return {className, style: {...self.props.style, ...node.props.style}}
+    } else {
+      return {className}
+    }
+
   }
 
   return function(DecoredComponent) {
