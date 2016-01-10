@@ -41,7 +41,6 @@ export default class Button extends React.Component {
 }
 
 /* bem-modules classes, pattern: className--propsKey-propsValue */
-
 .root--circle-true { border-radius: 50% }
 .root--kind-default { /*...*/ }
 .root--kind-primary { /*...*/ }

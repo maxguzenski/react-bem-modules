@@ -1,7 +1,7 @@
 {
-  "name": "react-bem-style",
+  "name": "react-bem-modules",
   "version": "1.0.0",
-  "description": "A tiny library to easy apply css/styles from props to react components",
+  "description": "A tiny library to easy apply css classes from props to react components",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
