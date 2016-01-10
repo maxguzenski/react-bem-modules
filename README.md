@@ -1,6 +1,6 @@
 # React BEM Modules
 
-A tiny library to easy apply css/styles to react components
+A tiny library to easy apply css classes from props to react components
 
 ## Install
 
