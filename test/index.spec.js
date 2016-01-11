@@ -9,7 +9,7 @@ describe('Bem', () => {
   describe('support to null styles', () => {
     const Button = Bem()(
       class Comp extends Component {
-        render() { return <button ref='btn' className='i1' style={{margin:10}}>...</button>}
+        render() { return <button className='i1' style={{margin:10}}>...</button>}
       }
     )
 
@@ -51,28 +51,28 @@ describe('Bem', () => {
 
     const Button = Bem(css)(
       class Comp extends Component {
-        render() { return <button ref='btn'>...</button>}
+        render() { return <button className='i1'>...</button>}
       }
     )
 
     it('has root class', () => {
       const btn = shallow(<Button />).find('button').props()
-      expect(btn.className).toEqual('root')
+      expect(btn.className).toEqual('root i1')
     })
 
     it('has root class and modifiers', () => {
       const btn = shallow(<Button kind='primary' disabled={true} />).find('button').props()
-      expect(btn.className).toEqual('root pri tru')
+      expect(btn.className).toEqual('root pri tru i1')
     })
 
     it('NOT set nonexistent modifiers', () => {
       const btn = shallow(<Button circle={true} />).find('button').props()
-      expect(btn.className).toEqual('root')
+      expect(btn.className).toEqual('root i1')
     })
 
     it('has setted className', () => {
       const btn = shallow(<Button className='ex1' />).find('button').props()
-      expect(btn.className).toEqual('root  ex1')
+      expect(btn.className).toEqual('root i1 ex1')
     })
   })
 

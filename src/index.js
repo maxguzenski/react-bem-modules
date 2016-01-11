@@ -1,10 +1,14 @@
 
-import React from 'react'
+import { Component, createClass, createElement, cloneElement } from 'react'
 import cx from 'classnames'
 
 function isPlain(value) {
   const type = typeof value
   return type === 'number' || type === 'string' || type === 'boolean'
+}
+
+function getDisplayName({ displayName, name }) {
+  return displayName || name || 'Component'
 }
 
 export default function(css, rootName, options={}) {
@@ -28,28 +32,34 @@ export default function(css, rootName, options={}) {
     }
 
     let className = cx(
-      css[rootName], allKlzzs, node.props.className, self.props.className
+      css[rootName],
+      !allKlzzs.length ? null : allKlzzs,
+      node.props.className,
+      self.props.className
     )
 
     if (className.trim) className = className.trim()
     if (className === '') className = null
+
+    if (!className && !self.props.style) {
+      return null
+    }
 
     if (options.mergeStyles) {
       return {className, style: {...self.props.style, ...node.props.style}}
     } else {
       return {className}
     }
-
   }
 
   return function(DecoredComponent) {
     return class WrapComponent extends DecoredComponent {
       render() {
-        const elem  = super.render()
-        if (!elem) return elem
+        const el  = super.render()
+        if (!el) return el
 
-        const props = buildBemClasses(this, elem)
-        return React.cloneElement(elem, props)
+        const props = buildBemClasses(this, el)
+        return !props ? el : cloneElement(el, props)
       }
     }
   }
