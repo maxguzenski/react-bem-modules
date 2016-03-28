@@ -16,7 +16,11 @@ export default function(css, rootName, options={}) {
   options  = typeof rootName === 'string' ? options : rootName
   rootName = typeof rootName === 'string' ? rootName : 'root'
 
-  options  = {mergeStyles: true, ...options}
+  options = {
+    mergeStyles: true,
+    getProps: (props) => props,
+    ...options
+  }
 
   function getClass(k, v) {
     return css[isPlain(v) ? `${rootName}--${k}-${v}` : `${rootName}--${k}-${!!v}`]
@@ -24,7 +28,7 @@ export default function(css, rootName, options={}) {
 
   function buildBemClasses(self, node) {
     const allKlzzs = []
-    const allProps = {...self.state || {}, ...self.props}
+    const allProps = {...self.state || {}, ...options.getProps(self.props)}
 
     for (let k in allProps) {
       const sp = getClass(k, allProps[k])
@@ -53,14 +57,28 @@ export default function(css, rootName, options={}) {
   }
 
   return function(DecoredComponent) {
-    return class WrapComponent extends DecoredComponent {
-      render() {
-        const el  = super.render()
-        if (!el) return el
+    let BemComponent = null
 
-        const props = buildBemClasses(this, el)
-        return !props ? el : cloneElement(el, props)
+    if (DecoredComponent.prototype && typeof DecoredComponent.prototype.isReactComponent === 'object') {
+      BemComponent = class extends DecoredComponent {
+        render() {
+          const el  = super.render()
+          if (!el) return el
+
+          const props = buildBemClasses(this, el)
+          return !props ? el : cloneElement(el, props)
+        }
+      }
+
+    } else {
+      BemComponent = (props, context) => {
+        const el = DecoredComponent(props, context)
+        const _p = buildBemClasses({props, state: {}}, el)
+        return !_p ? el : cloneElement(el, _p)
       }
     }
+
+    BemComponent.displayName = `Bem(${getDisplayName(DecoredComponent)})`
+    return BemComponent
   }
 }

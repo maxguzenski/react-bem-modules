@@ -22,6 +22,10 @@ describe('Bem', () => {
       const btn = shallow(<Button className='ex1' />).find('button').props()
       expect(btn.className).toEqual('i1 ex1')
     })
+
+    it('ha correctly displayName', () => {
+      expect(Button.displayName).toEqual('Bem(Comp)')
+    })
   })
 
   describe('support to many types of class root name', () => {
@@ -73,6 +77,17 @@ describe('Bem', () => {
     it('has setted className', () => {
       const btn = shallow(<Button className='ex1' />).find('button').props()
       expect(btn.className).toEqual('root i1 ex1')
+    })
+  })
+
+  describe('should works with stateless functions', () => {
+    const Button = Bem({root: 'root'})( (props) => {
+      return <button className='i1'>...</button>
+    })
+
+    it('has root class', () => {
+      const btn = shallow(<Button />).find('button').props()
+      expect(btn.className).toEqual('root i1')
     })
   })
 
